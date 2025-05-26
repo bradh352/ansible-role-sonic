@@ -4,7 +4,7 @@
 
 Author: Brad House<br/>
 License: MIT<br/>
-Original Repository: https://github.com/bradh352/ansible-scripts/tree/master/roles/sonic
+Original Repository: https://github.com/bradh352/ansible-role-sonic
 
 - [Overview](#overview)
 - [Implementation Details](#implementation-details)
