@@ -37,18 +37,18 @@
     "BGP_PEER_GROUP_AF": {
         "default|PEERS|ipv4_unicast": {
             "admin_status": "up",
-            "route_map_in": [ "ALLOW" ],
-            "route_map_out": [ "ALLOW" ]
+            "route_map_in": [ "ALLOW_ALL" ],
+            "route_map_out": [ "ALLOW_VTEP" ]
         },
         "default|PEERS|ipv6_unicast": {
             "admin_status": "up",
-            "route_map_in": [ "ALLOW" ],
-            "route_map_out": [ "ALLOW" ]
+            "route_map_in": [ "ALLOW_ALL" ],
+            "route_map_out": [ "ALLOW_VTEP" ]
         },
         "default|PEERS|l2vpn_evpn": {
             "admin_status": "up",
-            "route_map_in": [ "ALLOW" ],
-            "route_map_out": [ "ALLOW" ],
+            "route_map_in": [ "ALLOW_ALL" ],
+            "route_map_out": [ "ALLOW_ALL" ],
             "unchanged_nexthop": "true"
         }
     },
@@ -82,11 +82,22 @@
 {%     endif %}
     },
 {%   endif %}
+    "PREFIX_SET": {
+        "VTEP": {}
+    },
+    "PREFIX": {
+        "VTEP|1|{{ sonic_vxlan_vtep_ip }}|exact": {}
+    },
     "ROUTE_MAP_SET": {
-        "ALLOW": {}
+        "ALLOW_VTEP": {},
+        "ALLOW_ALL": {}
     },
     "ROUTE_MAP": {
-        "ALLOW|1": {
+        "ALLOW_VTEP|1": {
+            "match_prefix_set": "VTEP"
+            "route_operation": "permit"
+        },
+        "ALLOW_ALL|1": {
             "route_operation": "permit"
         }
     },
