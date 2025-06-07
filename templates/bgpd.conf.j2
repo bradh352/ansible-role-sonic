@@ -28,6 +28,18 @@ route-map IMPORT permit 1
 route-map PERMIT permit 1
 !
 !
+ip prefix-list VTEP seq 1 permit {{ sonic_vxlan_vtep_ip }} ge 32
+!
+route-map ALLOW_ALL permit 1
+!
+route-map ALLOW_VTEP_AND_BGP permit 1
+ match ip address prefix-list VTEP
+!
+route-map ALLOW_VTEP_AND_BGP permit 2
+ match source-protocol bgp
+!
+route-map ALLOW_VTEP_AND_BGP deny 100
+!
 router bgp {{ sonic_asn }}
   bgp router-id {{ sonic_vxlan_vtep_ip|split('/')|first }}
   bgp ebgp-requires-policy
@@ -46,20 +58,20 @@ router bgp {{ sonic_asn }}
 
   address-family ipv4 unicast
     neighbor PEERS activate
-    neighbor PEERS route-map IMPORT in
-    neighbor PEERS route-map EXPORT out
+    neighbor PEERS route-map ALLOW_ALL in
+    neighbor PEERS route-map ALLOW_VTEP_AND_BGP out
     redistribute connected
   !
   address-family ipv6 unicast
     neighbor PEERS activate
-    neighbor PEERS route-map IMPORT in
-    neighbor PEERS route-map EXPORT out
+    neighbor PEERS route-map ALLOW_ALL in
+    neighbor PEERS route-map ALLOW_VTEP_AND_BGP out
     redistribute connected
   !
   address-family l2vpn evpn
     neighbor PEERS activate
-    neighbor PEERS route-map PERMIT in
-    neighbor PEERS route-map PERMIT out
+    neighbor PEERS route-map ALLOW_ALL in
+    neighbor PEERS route-map ALLOW_ALL out
     neighbor PEERS attribute-unchanged next-hop
     autort rfc8365-compatible
     advertise-all-vni
