@@ -82,13 +82,14 @@
 {%     endif %}
     },
 {%   endif %}
+
     "PREFIX_SET": {
         "VTEP": {
           "mode": "IPv4"
         }
     },
     "PREFIX": {
-        "VTEP|1|{{ sonic_vxlan_vtep_ip }}|exact": {}
+        "VTEP|{{ sonic_vxlan_vtep_ip }}|exact": {}
     },
     "ROUTE_MAP_SET": {
         "ALLOW_VTEP_AND_BGP": {},
@@ -100,7 +101,7 @@
             "route_operation": "permit"
         },
         "ALLOW_VTEP_AND_BGP|2": {
-            "match_protocol": "BGP",
+            "match_protocol": "bgp",
             "route_operation": "permit"
         },
         "ALLOW_VTEP_AND_BGP|100": {
